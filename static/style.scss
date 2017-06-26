@@ -1,0 +1,12 @@
+$color: #333;
+
+@font-face {
+	font-family: 'Roboto-Bold';
+	src:  url('Roboto-Bold.ttf')
+}
+
+p {
+	size: 35px;
+	color: $color;
+	font-family: 'Roboto-Bold';
+}

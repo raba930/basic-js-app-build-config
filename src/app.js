@@ -1,0 +1,1 @@
+e => console.log(e)(`Hello es6 world!`)
