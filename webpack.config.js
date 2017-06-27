@@ -1,15 +1,25 @@
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 const path = require('path');
+const PROD = process.env.PROD_ENV !== undefined;
 
 const html = new HtmlWebpackPlugin({
     template: 'static/index.html',
     filename: 'index.html'
 })
 
-const extractSass = new ExtractTextPlugin({
+const extractStyle = new ExtractTextPlugin({
     filename: "css/style.css"
 });
+
+const compress_js = new webpack.optimize.UglifyJsPlugin({
+    compress: { warnings: false }
+});
+
+const compress_css = new OptimizeCssAssetsPlugin();
+
 
 module.exports = {
     entry: './src/index.js',
@@ -24,12 +34,12 @@ module.exports = {
             loader: 'html-loader'
         }, {
             test: /\.css$/,
-            use: extractSass.extract({
+            use: extractStyle.extract({
                 use: ['css-loader']
             })
         }, {
             test: /\.scss$/,
-            use: extractSass.extract({
+            use: extractStyle.extract({
                 use: [{
                     loader: "css-loader"
                 }, {
@@ -58,8 +68,7 @@ module.exports = {
             }
         }
     ]},
-    plugins: [
-        extractSass,
-        html
-    ]
+    plugins: PROD ?
+        [ extractStyle, html, compress_js, compress_css ] :
+        [ extractStyle, html ]
 }
